@@ -18,16 +18,16 @@ inputs:
     file:
         description: 'File to be analyzed.'
         required: true
+    resultsfile:
+        description: 'Name of file to write the results to'
+        default: 'bloaty.out'
     base-file:
         description: 'Base file used for diffs. Shows absolute sizes if not set.'
-outputs:
-  analysis-result:
-    description: 'Result of the bloat analysis'
 runs:
     using: 'docker'
     image: 'Dockerfile'
     args:
-        - echo "::set-output name=analysis-result::$(bloaty -d ${{ inputs.sources }} --demangle=${{ inputs.demangle-mode }} --domain=${{ inputs.domain }} -n ${{ inputs.rows }} ${{ inputs.file }} -- ${{ inputs.base-file }})"
+        - bloaty -d ${{ inputs.sources }} --demangle=${{ inputs.demangle-mode }} --domain=${{ inputs.domain }} -n ${{ inputs.rows }} ${{ inputs.file }} -- ${{ inputs.base-file }} 2>&1 |tee ${{ inputs.resultsfile }} ;
 
 branding:
     icon: 'bar-chart'
